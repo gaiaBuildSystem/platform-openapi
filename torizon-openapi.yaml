@@ -98,6 +98,13 @@ paths:
         schema:
           type: string
           format: date-time
+      - name: hardwareIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       - name: sortBy
         in: query
         required: false
@@ -973,8 +980,9 @@ paths:
         \ file)\n\n   `name` filters packages with an exact match of this name\n \
         \  \n   `version` filters packages with an exact match of this version\n\n\
         \   `hardwareIds` filters packages which pertain to one of the specified hardwareIds\n\
-        \nCan be sorted in various ways specified with the `sortBy` and `sortDirection`\
-        \ parameters\n\n        "
+        \n   `hashes` filters packages which match the specified hashes  \n\nCan be\
+        \ sorted in various ways specified with the `sortBy` and `sortDirection` parameters\n\
+        \n        "
       operationId: getPackages
       parameters:
       - name: offset
@@ -1018,6 +1026,13 @@ paths:
         schema:
           type: string
       - name: hardwareIds
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: hashes
         in: query
         required: false
         schema:
@@ -1854,6 +1869,10 @@ components:
           nullable: true
         friendlyName:
           type: string
+          nullable: true
+        expires:
+          type: string
+          format: date-time
           nullable: true
     DeviceCreateReq:
       required:
