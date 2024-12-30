@@ -23,9 +23,15 @@ paths:
       tags:
       - Devices
       summary: Query device information
-      description: "\nRetrieves a list of devices in your repository. Can be filtered\
-        \ by device name, or return a list of\nspecific devices by giving the device\
-        \ UUIDs to return as query parameters.\n        "
+      description: "\nRetrieves a list of devices in your repository. This endpoint\
+        \ has two different modes of operation. \n\n* You can specify `deviceId`s\
+        \ and/or `deviceUuid`s any number of times as query parameters, and all\n\
+        devices matching those ids will be returned.\n* You can specify a number of\
+        \ different filter parameters, and only devices matching all of the\nfilter\
+        \ parameters you specify will be returned. Available filter parameters:\n\
+        \    * `nameContains`\n    * `hibernated`\n    * `status`\n    * `activatedAfter`\n\
+        \    * `activatedBefore`\n    * `lastSeenStart`\n    * `lastSeenEnd`\n   \
+        \ * `createdAtStart`\n    * `createdAtEnd`\n        "
       operationId: getDevices
       parameters:
       - name: offset
@@ -41,6 +47,13 @@ paths:
           type: integer
           format: int64
       - name: deviceUuid
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: deviceId
         in: query
         required: false
         schema:
@@ -790,17 +803,45 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fleet'
         '400':
-          description: 'Invalid value for: path parameter fleetId'
+          description: Bad Request
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/BadRequestRepr'
         '404':
           description: Resource Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundRepr'
+    put:
+      tags:
+      - Fleets
+      summary: Update fleet
+      description: "\nUpdates fleet information.\n        "
+      operationId: putFleetsFleetid
+      parameters:
+      - name: fleetId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFleet'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestRepr'
     delete:
       tags:
       - Fleets
@@ -1345,8 +1386,8 @@ paths:
               $ref: '#/components/schemas/UpdateRequest'
         required: true
       responses:
-        '200':
-          description: ''
+        '201':
+          description: Successfully created Update
           content:
             application/json:
               schema:
@@ -1491,6 +1532,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundRepr'
+    delete:
+      tags:
+      - Updates
+      summary: Delete a lockbox
+      description: "\nDeletes a lockbox. The lockbox will no longer be available on\
+        \ GET\n        "
+      operationId: deleteLockboxesLockbox_name
+      parameters:
+      - name: lockbox_name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '404':
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundRepr'
   /lockboxes:
     get:
       tags:
@@ -1574,12 +1637,16 @@ paths:
         schema:
           type: integer
           format: int64
+          minimum: 1000
+          maximum: 2147483647000
       - name: to
         in: query
         required: false
         schema:
           type: integer
           format: int64
+          minimum: 1000
+          maximum: 2147483647000
       responses:
         '200':
           description: ''
@@ -1646,12 +1713,16 @@ paths:
         schema:
           type: integer
           format: int64
+          minimum: 1000
+          maximum: 2147483647000
       - name: to
         in: query
         required: true
         schema:
           type: integer
           format: int64
+          minimum: 1000
+          maximum: 2147483647000
       - name: resolution
         in: query
         required: false
@@ -1730,12 +1801,16 @@ paths:
         schema:
           type: integer
           format: int64
+          minimum: 1000
+          maximum: 2147483647000
       - name: to
         in: query
         required: true
         schema:
           type: integer
           format: int64
+          minimum: 1000
+          maximum: 2147483647000
       - name: resolution
         in: query
         required: false
@@ -1774,12 +1849,10 @@ components:
         msg:
           type: string
         description:
-          type: string
           nullable: true
         code:
           type: string
         cause:
-          type: string
           nullable: true
         errorId:
           type: string
@@ -1807,12 +1880,10 @@ components:
         msg:
           type: string
         description:
-          type: string
           nullable: true
         code:
           type: string
         cause:
-          type: string
           nullable: true
         errorId:
           type: string
@@ -1854,7 +1925,6 @@ components:
           format: uri
           nullable: true
         metadata:
-          type: string
           nullable: true
     DelegationInfo:
       type: object
@@ -1886,6 +1956,12 @@ components:
           type: string
         hibernated:
           type: boolean
+          nullable: true
+        fleetIds:
+          type: array
+          items:
+            type: string
+            format: uuid
           nullable: true
     DeviceInfoBasic:
       required:
@@ -2073,7 +2149,6 @@ components:
           format: uri
           nullable: true
         proprietaryMeta:
-          type: string
           nullable: true
         comment:
           type: string
@@ -2089,7 +2164,6 @@ components:
         description:
           type: string
         cause:
-          type: string
           nullable: true
         errorId:
           type: string
@@ -2134,7 +2208,6 @@ components:
           format: uri
           nullable: true
         proprietaryMeta:
-          type: string
           nullable: true
     FileInfo:
       required:
@@ -2274,12 +2347,10 @@ components:
         msg:
           type: string
         description:
-          type: string
           nullable: true
         code:
           type: string
         cause:
-          type: string
           nullable: true
         errorId:
           type: string
@@ -2325,7 +2396,6 @@ components:
           format: uri
           nullable: true
         proprietaryMeta:
-          type: string
           nullable: true
         comment:
           type: string
@@ -2528,12 +2598,10 @@ components:
         msg:
           type: string
         description:
-          type: string
           nullable: true
         code:
           type: string
         cause:
-          type: string
           nullable: true
         errorId:
           type: string
@@ -2678,6 +2746,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SimpleDeviceNotAffectedInfo'
+    UpdateFleet:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
     UpdateHibernationStatusRequest:
       required:
       - status
@@ -2715,12 +2790,10 @@ components:
         msg:
           type: string
         description:
-          type: string
           nullable: true
         code:
           type: string
         cause:
-          type: string
           nullable: true
         errorId:
           type: string
