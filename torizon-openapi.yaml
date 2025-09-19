@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   title: Torizon OTA
   version: 2.0-Beta
@@ -24,27 +24,31 @@ paths:
       - Devices
       summary: Query device information
       description: "\nRetrieves a list of devices in your repository. This endpoint\
-        \ has two different modes of operation. \n\n* You can specify `deviceId`s\
-        \ and/or `deviceUuid`s any number of times as query parameters, and all\n\
-        devices matching those ids will be returned.\n* You can specify a number of\
-        \ different filter parameters, and only devices matching all of the\nfilter\
-        \ parameters you specify will be returned. Available filter parameters:\n\
-        \    * `nameContains`\n    * `hibernated`\n    * `status`\n    * `activatedAfter`\n\
-        \    * `activatedBefore`\n    * `lastSeenStart`\n    * `lastSeenEnd`\n   \
-        \ * `createdAtStart`\n    * `createdAtEnd`\n        "
+        \ has two different modes of operation.\n\n* You can specify `deviceId`s and/or\
+        \ `deviceUuid`s any number of times as query parameters, and all\ndevices\
+        \ matching those ids will be returned.\n* You can specify a number of different\
+        \ filter parameters, and only devices matching all of the\nfilter parameters\
+        \ you specify will be returned. Available filter parameters:\n    * `nameContains`\n\
+        \    * `hibernated`\n    * `status`\n    * `activatedAfter`\n    * `activatedBefore`\n\
+        \    * `lastSeenStart`\n    * `lastSeenEnd`\n    * `createdAtStart`\n    *\
+        \ `createdAtEnd`\n        "
       operationId: getDevices
       parameters:
       - name: offset
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: deviceUuid
         in: query
@@ -64,52 +68,70 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
       - name: hibernated
         in: query
         required: false
         schema:
-          type: boolean
+          type:
+          - boolean
+          - 'null'
       - name: status
         in: query
         required: false
         schema:
-          $ref: '#/components/schemas/DeviceStatus'
+          anyOf:
+          - $ref: '#/components/schemas/DeviceStatus'
+          - type: 'null'
       - name: activatedAfter
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
       - name: activatedBefore
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
       - name: lastSeenStart
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
       - name: lastSeenEnd
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
       - name: createdAtStart
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
       - name: createdAtEnd
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
       - name: hardwareIds
         in: query
@@ -122,19 +144,23 @@ paths:
         in: query
         required: false
         schema:
-          $ref: '#/components/schemas/DeviceSort'
+          anyOf:
+          - $ref: '#/components/schemas/DeviceSort'
+          - type: 'null'
       - name: sortDirection
         in: query
         required: false
         schema:
-          $ref: '#/components/schemas/DeviceSortDirection'
+          anyOf:
+          - $ref: '#/components/schemas/DeviceSortDirection'
+          - type: 'null'
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_com.toradex.api_gw.data.DeviceInfoBasic'
+                $ref: '#/components/schemas/PaginationResult[DeviceInfoBasic]'
         '400':
           description: Bad Request
           content:
@@ -276,13 +302,17 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: deviceUuid
         in: query
@@ -297,7 +327,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_com.toradex.api_gw.data.NetworkInfo'
+                $ref: '#/components/schemas/PaginationResult[NetworkInfo]'
         '400':
           description: Bad Request
           content:
@@ -564,13 +594,17 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: deviceUuid
         in: query
@@ -583,14 +617,16 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_com.toradex.api_gw.data.DevicePackages'
+                $ref: '#/components/schemas/PaginationResult[DevicePackages]'
         '400':
           description: Bad Request
           content:
@@ -726,13 +762,17 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       responses:
         '200':
@@ -740,7 +780,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_com.toradex.api_gw.data.Fleet'
+                $ref: '#/components/schemas/PaginationResult[Fleet]'
         '400':
           description: Bad Request
           content:
@@ -895,13 +935,17 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       responses:
         '200':
@@ -909,7 +953,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_com.toradex.api_gw.data.DeviceInfoBasic'
+                $ref: '#/components/schemas/PaginationResult[DeviceInfoBasic]'
         '400':
           description: Bad Request
           content:
@@ -1035,25 +1079,33 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: idContains
         in: query
         required: false
         deprecated: true
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
       - name: nameContains
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
       - name: packageSource
         in: query
         required: false
@@ -1065,12 +1117,16 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
       - name: version
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
       - name: hardwareIds
         in: query
         required: false
@@ -1096,19 +1152,23 @@ paths:
         in: query
         required: false
         schema:
-          $ref: '#/components/schemas/TargetItemsSort'
+          anyOf:
+          - $ref: '#/components/schemas/TargetItemsSort'
+          - type: 'null'
       - name: sortDirection
         in: query
         required: false
         schema:
-          $ref: '#/components/schemas/SortDirection'
+          anyOf:
+          - $ref: '#/components/schemas/SortDirection'
+          - type: 'null'
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_com.toradex.api_gw.data.Packages.Package'
+                $ref: '#/components/schemas/PaginationResult[Package]'
         '400':
           description: Bad Request
           content:
@@ -1131,6 +1191,7 @@ paths:
         required: true
         schema:
           type: string
+          minLength: 1
       - name: version
         in: query
         required: true
@@ -1138,9 +1199,10 @@ paths:
           type: string
       - name: hardwareId
         in: query
-        required: false
+        required: true
         schema:
           type: array
+          minItems: 1
           items:
             type: string
       - name: targetFormat
@@ -1181,6 +1243,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConflictRepr'
   /packages/{packageId}:
+    get:
+      tags:
+      - Packages
+      summary: Retrieve metadata about a single package
+      description: "\nShould return metadata about a single package.\n        "
+      operationId: getPackagesPackageid
+      parameters:
+      - name: packageId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestRepr'
+        '404':
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundRepr'
     delete:
       tags:
       - Packages
@@ -1280,26 +1373,32 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
       - name: idContains
         in: query
         required: false
         schema:
-          type: string
+          type:
+          - string
+          - 'null'
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_com.toradex.api_gw.data.Packages.ExternalPackage'
+                $ref: '#/components/schemas/PaginationResult[ExternalPackage]'
         '400':
           description: Bad Request
           content:
@@ -1325,7 +1424,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Map_com.advancedtelematic.libtuf.data.ClientDataType.DelegatedRoleName_com.advancedtelematic.libtuf.data.ClientDataType.DelegationInfo'
+                $ref: '#/components/schemas/Map[DelegatedRoleName, DelegationInfo]'
         '404':
           description: Resource Not Found
           content:
@@ -1409,54 +1508,87 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '416':
           description: Range not Satisfiable
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RangeNotSatisfiableRepr'
+  /updates/{updateId}:
     patch:
       tags:
       - Updates
-      summary: Cancel a pending update for one or more devices
-      description: "\nCancels any pending update for a list of devices. Note that\
-        \ this endpoint does not accept fleet UUIDs,\nonly device UUIDs.\n\nUpdates\
-        \ can only be cancelled when they are Pending. After the device has received\
-        \ its update instructions,\nthe update can no longer be cancelled from the\
-        \ server side.\n        "
-      operationId: patchUpdates
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-                format: uuid
+      summary: Cancel an update
+      description: "\nCancels the update\n\nUpdates can only be cancelled when they\
+        \ are Pending. After the device has received its update instructions,\nthe\
+        \ update can no longer be cancelled from the server side.\n        "
+      operationId: patchUpdatesUpdateid
+      parameters:
+      - name: updateId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestRepr'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictRepr'
+  /updates/devices/{deviceId}:
+    get:
+      tags:
+      - Updates
+      summary: list updates
+      description: "\nList all updates created a specific device\n              "
+      operationId: getUpdatesDevicesDeviceid
+      parameters:
+      - name: deviceId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
         required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-                  format: uuid
+                $ref: '#/components/schemas/PaginationResult[UpdateResponse]'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
-        '416':
-          description: Range not Satisfiable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RangeNotSatisfiableRepr'
+                $ref: '#/components/schemas/BadRequestRepr'
   /lockboxes/{lockbox_name}:
     get:
       tags:
@@ -1478,7 +1610,9 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
       responses:
         '200':
@@ -1492,7 +1626,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -1537,7 +1673,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -1589,7 +1727,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -1614,13 +1754,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Map_com.toradex.api_gw.data.Lockbox.LockboxName_com.advancedtelematic.libtuf.data.TufDataType.JsonSignedPayload'
+                $ref: '#/components/schemas/Map_LockboxName_JsonSignedPayload'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -1647,7 +1789,9 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
           minimum: 1000
           maximum: 2147483647000
@@ -1655,7 +1799,9 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int64
           minimum: 1000
           maximum: 2147483647000
@@ -1665,13 +1811,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult_java.lang.String'
+                $ref: '#/components/schemas/PaginationResult[String]'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -1739,7 +1887,9 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
       responses:
         '200':
@@ -1753,7 +1903,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -1827,7 +1979,9 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
       responses:
         '200':
@@ -1841,7 +1995,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '416':
           description: Range not Satisfiable
           content:
@@ -1887,7 +2043,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -1924,9 +2082,9 @@ paths:
         required: true
         schema:
           type: array
+          minItems: 1
           items:
             type: string
-          minItems: 1
       - name: from
         in: query
         required: true
@@ -1943,13 +2101,17 @@ paths:
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
       - name: total_buckets
         in: query
         required: false
         schema:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
       responses:
         '200':
@@ -1971,7 +2133,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '416':
           description: Range not Satisfiable
           content:
@@ -2025,7 +2189,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
+                anyOf:
+                - $ref: '#/components/schemas/BadRequestRepr'
+                - $ref: '#/components/schemas/UpstreamEndpointErrorRepr'
         '404':
           description: Resource Not Found
           content:
@@ -2324,31 +2490,39 @@ paths:
 components:
   schemas:
     Average:
+      title: Average
       type: object
     BadRequestRepr:
+      title: BadRequestRepr
+      type: object
       required:
       - msg
       - code
-      type: object
       properties:
         msg:
           type: string
         description:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         code:
           type: string
         cause:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         errorId:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
     ClientSignature:
+      title: ClientSignature
+      type: object
       required:
       - keyid
       - method
       - sig
-      type: object
       properties:
         keyid:
           type: string
@@ -2357,39 +2531,49 @@ components:
         sig:
           type: string
     ConflictRepr:
+      title: ConflictRepr
+      type: object
       required:
       - msg
       - code
-      type: object
       properties:
         msg:
           type: string
         description:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         code:
           type: string
         cause:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         errorId:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
     Count:
+      title: Count
       type: object
     CreateFleet:
+      title: CreateFleet
+      type: object
       required:
       - name
       - fleetType
-      type: object
       properties:
         name:
           type: string
         fleetType:
           $ref: '#/components/schemas/FleetType'
         expression:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
     CreateLockboxRequest:
+      title: CreateLockboxRequest
       type: object
       properties:
         packageIds:
@@ -2397,15 +2581,20 @@ components:
           items:
             type: string
         custom:
-          $ref: '#/components/schemas/Map_eu.timepit.refined.api.Refined_java.lang.String_com.advancedtelematic.libtuf.data.TufDataType.ValidTargetFilename_com.toradex.api_gw.data.Update.CustomUpdateData'
+          anyOf:
+          - $ref: '#/components/schemas/Map[Refined[String, ValidTargetFilename],
+              CustomUpdateData]'
+          - type: 'null'
         expiresAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
     CreateSessionRequest:
+      title: CreateSessionRequest
+      type: object
       required:
       - sessionDuration
-      type: object
       properties:
         publicKeys:
           type: array
@@ -2414,44 +2603,54 @@ components:
         sessionDuration:
           type: string
     CustomUpdateData:
+      title: CustomUpdateData
       type: object
       properties:
         uri:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         metadata:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
     DelegationInfo:
+      title: DelegationInfo
       type: object
       properties:
         lastFetched:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         remoteUri:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         friendlyName:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         expires:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
     DetailedMetricQuery:
+      title: DetailedMetricQuery
+      type: object
       required:
       - metrics
       - from
       - to
-      type: object
       properties:
         metrics:
           type: array
+          minItems: 1
           items:
             type: string
-          minItems: 1
         from:
           type: integer
           format: int64
@@ -2459,52 +2658,78 @@ components:
           type: integer
           format: int64
         datapointCount:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
-          nullable: true
         totalBuckets:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
-          nullable: true
     DeviceCreateReq:
+      title: DeviceCreateReq
+      type: object
       required:
       - deviceId
-      type: object
       properties:
         deviceName:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         deviceId:
           type: string
         hibernated:
-          type: boolean
-          nullable: true
+          type:
+          - boolean
+          - 'null'
         fleetIds:
-          type: array
+          type:
+          - array
+          - 'null'
+          uniqueItems: true
           items:
             type: string
             format: uuid
-          nullable: true
+    DeviceId:
+      title: DeviceId
+      type: object
+      required:
+      - uuid
+      properties:
+        uuid:
+          type: string
+          format: uuid
     DeviceInfo:
+      title: DeviceInfo
+      type: object
       required:
       - deviceId
-      type: object
       properties:
         deviceId:
           type: string
           format: uuid
         lastApiConnect:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         lastSshSessionConnect:
-          $ref: '#/components/schemas/LastSshSession'
+          anyOf:
+          - $ref: '#/components/schemas/LastSshSession'
+          - type: 'null'
         lastVersion:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         lastUserConnect:
-          $ref: '#/components/schemas/UserInfo'
+          anyOf:
+          - $ref: '#/components/schemas/UserInfo'
+          - type: 'null'
     DeviceInfoBasic:
+      title: DeviceInfoBasic
+      type: object
+      pattern: ^[A-Z].*
       required:
       - deviceUuid
       - deviceName
@@ -2513,7 +2738,6 @@ components:
       - deviceStatus
       - notes
       - hibernated
-      type: object
       properties:
         deviceUuid:
           type: string
@@ -2523,26 +2747,31 @@ components:
         deviceId:
           type: string
         lastSeen:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         createdAt:
           type: string
           format: date-time
         activatedAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         deviceStatus:
           $ref: '#/components/schemas/DeviceStatus'
         notes:
           type: string
         attributes:
-          $ref: '#/components/schemas/Map_com.toradex.api_gw.data.DeviceTagId_com.toradex.api_gw.data.DeviceTagValue'
+          anyOf:
+          - $ref: '#/components/schemas/Map[DeviceTagId, DeviceTagValue]'
+          - type: 'null'
         hibernated:
           type: boolean
-      pattern: ^[A-Z].*
     DeviceInfoExtended:
+      title: DeviceInfoExtended
+      type: object
       required:
       - deviceUuid
       - deviceName
@@ -2552,7 +2781,6 @@ components:
       - notes
       - hibernated
       - networkInfo
-      type: object
       properties:
         deviceUuid:
           type: string
@@ -2562,16 +2790,18 @@ components:
         deviceId:
           type: string
         lastSeen:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         createdAt:
           type: string
           format: date-time
         activatedAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         deviceStatus:
           $ref: '#/components/schemas/DeviceStatus'
         notes:
@@ -2579,9 +2809,10 @@ components:
         hibernated:
           type: boolean
         lastUpdated:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         deviceFleets:
           type: array
           items:
@@ -2589,47 +2820,34 @@ components:
         devicePackages:
           type: array
           items:
-            $ref: '#/components/schemas/DevicePackage'
+            $ref: '#/components/schemas/InstalledPackage'
         deviceTags:
           type: array
           items:
-            $ref: '#/components/schemas/Tuple2_com.toradex.api_gw.data.DeviceTagId_com.toradex.api_gw.data.DeviceTagValue'
+            $ref: '#/components/schemas/Tuple2_DeviceTagId_DeviceTagValue'
         networkInfo:
           $ref: '#/components/schemas/NetworkInfo'
     DeviceNameRequest:
+      title: DeviceNameRequest
+      type: object
       required:
       - name
-      type: object
       properties:
         name:
           type: string
     DeviceNotesRequest:
+      title: DeviceNotesRequest
+      type: object
       required:
       - notes
-      type: object
       properties:
         notes:
           type: string
-    DevicePackage:
-      required:
-      - component
-      - name
-      - version
-      - checksum
-      type: object
-      properties:
-        component:
-          type: string
-        name:
-          type: string
-        version:
-          type: string
-        checksum:
-          type: string
     DevicePackages:
+      title: DevicePackages
+      type: object
       required:
       - deviceUuid
-      type: object
       properties:
         deviceUuid:
           type: string
@@ -2639,13 +2857,15 @@ components:
           items:
             $ref: '#/components/schemas/InstalledPackage'
     DeviceSession:
+      title: DeviceSession
+      type: object
       required:
       - ssh
-      type: object
       properties:
         ssh:
           $ref: '#/components/schemas/SshSession'
     DeviceSort:
+      title: DeviceSort
       type: string
       enum:
       - Name
@@ -2655,11 +2875,13 @@ components:
       - ActivatedAt
       - LastSeen
     DeviceSortDirection:
+      title: DeviceSortDirection
       type: string
       enum:
       - Asc
       - Desc
     DeviceStatus:
+      title: DeviceStatus
       type: string
       enum:
       - NotSeen
@@ -2669,11 +2891,12 @@ components:
       - Outdated
       - UpdateScheduled
     EcuInfoImage:
+      title: EcuInfoImage
+      type: object
       required:
       - filepath
       - size
       - hash
-      type: object
       properties:
         filepath:
           type: string
@@ -2684,15 +2907,18 @@ components:
           type: string
           format: checksum
     EcuInfoResponse:
+      title: EcuInfoResponse
+      type: object
       required:
       - id
       - hardwareId
       - primary
       - image
-      type: object
       properties:
         id:
           type: string
+          maxLength: 64
+          minLength: 1
         hardwareId:
           type: string
         primary:
@@ -2700,39 +2926,51 @@ components:
         image:
           $ref: '#/components/schemas/EcuInfoImage'
     EditPackage:
+      title: EditPackage
       type: object
       properties:
         hardwareIds:
-          type: array
+          type:
+          - array
+          - 'null'
           items:
             type: string
-          nullable: true
         uri:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         proprietaryMeta:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         comment:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
     ErrorRepresentation:
+      title: ErrorRepresentation
+      type: object
       required:
       - code
       - description
-      type: object
       properties:
         code:
           type: string
         description:
           type: string
         cause:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         errorId:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
     ExternalPackage:
+      title: ExternalPackage
+      type: object
       required:
       - name
       - delegationOrigin
@@ -2740,7 +2978,6 @@ components:
       - packageId
       - size
       - hashes
-      type: object
       properties:
         name:
           type: string
@@ -2754,29 +2991,35 @@ components:
           type: integer
           format: int64
         hashes:
-          $ref: '#/components/schemas/Map_scala.Enumeration.Value_eu.timepit.refined.api.Refined_java.lang.String_com.advancedtelematic.libats.data.DataType.ValidChecksum'
+          $ref: '#/components/schemas/Map_Value_Refined_String_ValidChecksum'
         pkgType:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         hardwareIds:
           type: array
           items:
             type: string
         createdAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         uri:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         proprietaryMeta:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
     FileInfo:
+      title: FileInfo
+      type: object
       required:
       - hashes
       - length
-      type: object
       properties:
         hashes:
           type: string
@@ -2785,12 +3028,14 @@ components:
           type: integer
           format: int64
     Fleet:
+      title: Fleet
+      type: object
+      pattern: ^[A-Z].*
       required:
       - id
       - name
       - createdAt
       - fleetType
-      type: object
       properties:
         id:
           type: string
@@ -2803,21 +3048,22 @@ components:
         fleetType:
           $ref: '#/components/schemas/FleetType'
         expression:
-          type: string
-          nullable: true
-      pattern: ^[A-Z].*
+          type:
+          - string
+          - 'null'
     FleetMetricsOutliersRequest:
+      title: FleetMetricsOutliersRequest
+      type: object
       required:
       - metrics
       - from
       - to
-      type: object
       properties:
         metrics:
           type: array
+          minItems: 1
           items:
             type: string
-          minItems: 1
         from:
           type: integer
           format: int64
@@ -2825,12 +3071,16 @@ components:
           type: integer
           format: int64
         aggregation:
-          $ref: '#/components/schemas/OutlierAggregationMethod'
+          anyOf:
+          - $ref: '#/components/schemas/OutlierAggregationMethod'
+          - type: 'null'
         limit:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
-          nullable: true
     FleetMetricsOutliersResponse:
+      title: FleetMetricsOutliersResponse
       type: object
       properties:
         values:
@@ -2838,41 +3088,46 @@ components:
           items:
             $ref: '#/components/schemas/OutlierValues'
     FleetType:
+      title: FleetType
       type: string
       enum:
       - static
       - dynamic
     Image:
+      title: Image
+      type: object
       required:
       - filepath
       - fileinfo
-      type: object
       properties:
         filepath:
           type: string
         fileinfo:
           $ref: '#/components/schemas/FileInfo'
     InstalledPackage:
+      title: InstalledPackage
+      type: object
       required:
       - component
       - installed
-      type: object
       properties:
         component:
           type: string
         installed:
-          $ref: '#/components/schemas/PackageInfo'
+          $ref: '#/components/schemas/Package'
     IpAddressRequest:
+      title: IpAddressRequest
+      type: object
       required:
       - ip
-      type: object
       properties:
         ip:
           type: string
     JsonSignedPayload:
+      title: JsonSignedPayload
+      type: object
       required:
       - signed
-      type: object
       properties:
         signatures:
           type: array
@@ -2880,62 +3135,89 @@ components:
             $ref: '#/components/schemas/ClientSignature'
         signed: {}
     KeyData:
+      title: KeyData
+      type: object
       required:
       - pubkey
       - meta
-      type: object
       properties:
         pubkey:
           type: string
         meta: {}
     Last:
+      title: Last
       type: object
     LastSshSession:
+      title: LastSshSession
+      type: object
       required:
       - connectedAt
       - ipAddress
-      type: object
       properties:
         connectedAt:
           type: string
           format: date-time
         ipAddress:
           type: string
-    Map_com.advancedtelematic.libats.data.EcuIdentifier_com.advancedtelematic.libats.data.ErrorRepresentation:
+    Limit:
+      title: Limit
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          type: integer
+          format: int64
+    Map[DelegatedRoleName, DelegationInfo]:
+      title: Map[DelegatedRoleName, DelegationInfo]
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/DelegationInfo'
+    Map[DeviceTagId, DeviceTagValue]:
+      title: Map[DeviceTagId, DeviceTagValue]
+      type: object
+      additionalProperties:
+        type: string
+    Map[Refined[String, And], ErrorRepresentation]:
+      title: Map[Refined[String, And], ErrorRepresentation]
       type: object
       additionalProperties:
         $ref: '#/components/schemas/ErrorRepresentation'
-    Map_com.advancedtelematic.libats.data.EcuIdentifier_com.toradex.api_gw.data.UptaneDataType.TargetImage:
+    Map[Refined[String, And], TargetImage]:
+      title: Map[Refined[String, And], TargetImage]
       type: object
       additionalProperties:
         $ref: '#/components/schemas/TargetImage'
-    ? Map_com.advancedtelematic.libtuf.data.ClientDataType.DelegatedRoleName_com.advancedtelematic.libtuf.data.ClientDataType.DelegationInfo
-    : type: object
-      additionalProperties:
-        $ref: '#/components/schemas/DelegationInfo'
-    Map_com.toradex.api_gw.data.DeviceTagId_com.toradex.api_gw.data.DeviceTagValue:
+    Map[Refined[String, ValidHardwareIdentifier], Refined]:
+      title: Map[Refined[String, ValidHardwareIdentifier], Refined]
       type: object
       additionalProperties:
         type: string
-    Map_com.toradex.api_gw.data.Lockbox.LockboxName_com.advancedtelematic.libtuf.data.TufDataType.JsonSignedPayload:
+    Map[Refined[String, ValidTargetFilename], CustomUpdateData]:
+      title: Map[Refined[String, ValidTargetFilename], CustomUpdateData]
       type: object
       additionalProperties:
-        $ref: '#/components/schemas/JsonSignedPayload'
-    Map_com.toradex.api_gw.data.RemoteAccess.KeyData:
+        $ref: '#/components/schemas/CustomUpdateData'
+    Map_KeyData:
+      title: Map_KeyData
       type: object
       additionalProperties:
         $ref: '#/components/schemas/KeyData'
-    ? Map_eu.timepit.refined.api.Refined_java.lang.String_com.advancedtelematic.libtuf.data.TufDataType.ValidTargetFilename_com.toradex.api_gw.data.Update.CustomUpdateData
-    : type: object
+    Map_LockboxName_JsonSignedPayload:
+      title: Map_LockboxName_JsonSignedPayload
+      type: object
       additionalProperties:
-        $ref: '#/components/schemas/CustomUpdateData'
-    ? Map_scala.Enumeration.Value_eu.timepit.refined.api.Refined_java.lang.String_com.advancedtelematic.libats.data.DataType.ValidChecksum
-    : type: object
+        $ref: '#/components/schemas/JsonSignedPayload'
+    Map_Value_Refined_String_ValidChecksum:
+      title: Map_Value_Refined_String_ValidChecksum
+      type: object
       additionalProperties:
         type: string
     Max:
+      title: Max
       type: object
     MetricsResponse:
+      title: MetricsResponse
       type: object
       properties:
         series:
@@ -2943,70 +3225,95 @@ components:
           items:
             $ref: '#/components/schemas/Series'
     Min:
+      title: Min
       type: object
     NetworkInfo:
+      title: NetworkInfo
+      type: object
       required:
       - deviceUuid
-      type: object
       properties:
         deviceUuid:
           type: string
           format: uuid
         localIpV4:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         hostname:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         macAddress:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
     None:
+      title: None
       type: object
     NotFoundRepr:
+      title: NotFoundRepr
+      type: object
       required:
       - msg
       - code
-      type: object
       properties:
         msg:
           type: string
         description:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         code:
           type: string
         cause:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         errorId:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
+    Offset:
+      title: Offset
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          type: integer
+          format: int64
     Outlier:
+      title: Outlier
+      type: object
       required:
       - deviceId
       - observedAt
-      type: object
       properties:
         deviceId:
           type: string
           format: uuid
         value:
-          type: number
+          type:
+          - number
+          - 'null'
           format: double
-          nullable: true
         observedAt:
           type: string
           format: date-time
     OutlierAggregationMethod:
+      title: OutlierAggregationMethod
       type: string
       enum:
       - Max
       - Min
     OutlierValues:
+      title: OutlierValues
+      type: object
       required:
       - metricName
       - aggregation
-      type: object
       properties:
         metricName:
           type: string
@@ -3017,13 +3324,15 @@ components:
           items:
             $ref: '#/components/schemas/Outlier'
     Package:
+      title: Package
+      type: object
       required:
       - name
       - version
       - packageId
       - size
       - hashes
-      type: object
+      - packageSource
       properties:
         name:
           type: string
@@ -3035,50 +3344,43 @@ components:
           type: integer
           format: int64
         hashes:
-          $ref: '#/components/schemas/Map_scala.Enumeration.Value_eu.timepit.refined.api.Refined_java.lang.String_com.advancedtelematic.libats.data.DataType.ValidChecksum'
+          $ref: '#/components/schemas/Map_Value_Refined_String_ValidChecksum'
         packageSource:
           type: string
           minLength: 1
-          nullable: true
         pkgType:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         hardwareIds:
           type: array
           items:
             type: string
         createdAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         uri:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         proprietaryMeta:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         comment:
-          type: string
-          nullable: true
-    PackageInfo:
-      required:
-      - packageName
-      - packageVersion
-      - checksum
+          type:
+          - string
+          - 'null'
+    PaginationResult[DeviceInfoBasic]:
+      title: PaginationResult[DeviceInfoBasic]
       type: object
-      properties:
-        packageName:
-          type: string
-        packageVersion:
-          type: string
-        checksum:
-          type: string
-    PaginationResult_com.toradex.api_gw.data.DeviceInfoBasic:
       required:
       - total
       - offset
       - limit
-      type: object
       properties:
         values:
           type: array
@@ -3088,17 +3390,16 @@ components:
           type: integer
           format: int64
         offset:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/Offset'
         limit:
-          type: integer
-          format: int64
-    PaginationResult_com.toradex.api_gw.data.DevicePackages:
+          $ref: '#/components/schemas/Limit'
+    PaginationResult[DevicePackages]:
+      title: PaginationResult[DevicePackages]
+      type: object
       required:
       - total
       - offset
       - limit
-      type: object
       properties:
         values:
           type: array
@@ -3108,57 +3409,16 @@ components:
           type: integer
           format: int64
         offset:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/Offset'
         limit:
-          type: integer
-          format: int64
-    PaginationResult_com.toradex.api_gw.data.Fleet:
+          $ref: '#/components/schemas/Limit'
+    PaginationResult[ExternalPackage]:
+      title: PaginationResult[ExternalPackage]
+      type: object
       required:
       - total
       - offset
       - limit
-      type: object
-      properties:
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/Fleet'
-        total:
-          type: integer
-          format: int64
-        offset:
-          type: integer
-          format: int64
-        limit:
-          type: integer
-          format: int64
-    PaginationResult_com.toradex.api_gw.data.NetworkInfo:
-      required:
-      - total
-      - offset
-      - limit
-      type: object
-      properties:
-        values:
-          type: array
-          items:
-            $ref: '#/components/schemas/NetworkInfo'
-        total:
-          type: integer
-          format: int64
-        offset:
-          type: integer
-          format: int64
-        limit:
-          type: integer
-          format: int64
-    PaginationResult_com.toradex.api_gw.data.Packages.ExternalPackage:
-      required:
-      - total
-      - offset
-      - limit
-      type: object
       properties:
         values:
           type: array
@@ -3168,17 +3428,54 @@ components:
           type: integer
           format: int64
         offset:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/Offset'
         limit:
-          type: integer
-          format: int64
-    PaginationResult_com.toradex.api_gw.data.Packages.Package:
+          $ref: '#/components/schemas/Limit'
+    PaginationResult[Fleet]:
+      title: PaginationResult[Fleet]
+      type: object
       required:
       - total
       - offset
       - limit
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fleet'
+        total:
+          type: integer
+          format: int64
+        offset:
+          $ref: '#/components/schemas/Offset'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    PaginationResult[NetworkInfo]:
+      title: PaginationResult[NetworkInfo]
       type: object
+      required:
+      - total
+      - offset
+      - limit
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkInfo'
+        total:
+          type: integer
+          format: int64
+        offset:
+          $ref: '#/components/schemas/Offset'
+        limit:
+          $ref: '#/components/schemas/Limit'
+    PaginationResult[Package]:
+      title: PaginationResult[Package]
+      type: object
+      required:
+      - total
+      - offset
+      - limit
       properties:
         values:
           type: array
@@ -3188,17 +3485,16 @@ components:
           type: integer
           format: int64
         offset:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/Offset'
         limit:
-          type: integer
-          format: int64
-    PaginationResult_java.lang.String:
+          $ref: '#/components/schemas/Limit'
+    PaginationResult[String]:
+      title: PaginationResult[String]
+      type: object
       required:
       - total
       - offset
       - limit
-      type: object
       properties:
         values:
           type: array
@@ -3208,19 +3504,37 @@ components:
           type: integer
           format: int64
         offset:
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/Offset'
         limit:
+          $ref: '#/components/schemas/Limit'
+    PaginationResult[UpdateResponse]:
+      title: PaginationResult[UpdateResponse]
+      type: object
+      required:
+      - total
+      - offset
+      - limit
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateResponse'
+        total:
           type: integer
           format: int64
+        offset:
+          $ref: '#/components/schemas/Offset'
+        limit:
+          $ref: '#/components/schemas/Limit'
     ProvisionInfo:
+      title: ProvisionInfo
+      type: object
       required:
       - token
       - autoProvUrl
       - gatewayUrl
       - provisionedDevices
       - standardDeviceLimit
-      type: object
       properties:
         token:
           type: string
@@ -3237,48 +3551,57 @@ components:
           type: integer
           format: int32
     PublicKeys:
+      title: PublicKeys
+      type: object
       required:
       - keys
-      type: object
       properties:
         keys:
-          $ref: '#/components/schemas/Map_com.toradex.api_gw.data.RemoteAccess.KeyData'
+          $ref: '#/components/schemas/Map_KeyData'
     QueueResponse:
+      title: QueueResponse
+      type: object
       required:
       - correlationId
       - targets
       - inFlight
-      type: object
       properties:
         correlationId:
           type: string
         targets:
-          $ref: '#/components/schemas/Map_com.advancedtelematic.libats.data.EcuIdentifier_com.toradex.api_gw.data.UptaneDataType.TargetImage'
+          $ref: '#/components/schemas/Map[Refined[String, And], TargetImage]'
         inFlight:
           type: boolean
     RangeNotSatisfiableRepr:
+      title: RangeNotSatisfiableRepr
+      type: object
       required:
       - msg
       - code
-      type: object
       properties:
         msg:
           type: string
         description:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         code:
           type: string
         cause:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         errorId:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
     Series:
+      title: Series
+      type: object
       required:
       - name
       - meta
-      type: object
       properties:
         name:
           type: string
@@ -3287,11 +3610,12 @@ components:
         points:
           type: array
           items:
-            $ref: '#/components/schemas/Tuple2_scala.Long_scala.Option_scala.Double'
+            $ref: '#/components/schemas/Tuple2_Long_Option_Double'
     SeriesMeta:
+      title: SeriesMeta
+      type: object
       required:
       - aggregation
-      type: object
       properties:
         aggregation:
           $ref: '#/components/schemas/TimeAggregation'
@@ -3301,17 +3625,19 @@ components:
             type: string
             format: uuid
     SignatureMethod:
+      title: SignatureMethod
       type: string
       enum:
       - rsassa-pss-sha256
       - ed25519
       - ecPrime256v1
     SimpleDeviceInfo:
+      title: SimpleDeviceInfo
+      type: object
       required:
       - deviceUuid
       - deviceId
       - name
-      type: object
       properties:
         deviceUuid:
           type: string
@@ -3321,12 +3647,13 @@ components:
         name:
           type: string
     SimpleDeviceNotAffectedInfo:
+      title: SimpleDeviceNotAffectedInfo
+      type: object
       required:
       - deviceUuid
       - deviceId
       - name
       - ecuErrors
-      type: object
       properties:
         deviceUuid:
           type: string
@@ -3336,19 +3663,21 @@ components:
         name:
           type: string
         ecuErrors:
-          $ref: '#/components/schemas/Map_com.advancedtelematic.libats.data.EcuIdentifier_com.advancedtelematic.libats.data.ErrorRepresentation'
+          $ref: '#/components/schemas/Map[Refined[String, And], ErrorRepresentation]'
     SortDirection:
+      title: SortDirection
       type: string
       enum:
       - Asc
       - Desc
     SshSession:
+      title: SshSession
+      type: object
       required:
       - reversePort
       - raServerUrl
       - raServerSshPubKey
       - expiresAt
-      type: object
       properties:
         authorizedPubKeys:
           type: array
@@ -3365,66 +3694,67 @@ components:
           type: string
           format: date-time
     TargetImage:
+      title: TargetImage
+      type: object
       required:
       - image
       - createdAt
-      type: object
       properties:
         image:
           $ref: '#/components/schemas/Image'
         uri:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uri
-          nullable: true
         createdAt:
           type: string
           format: date-time
     TargetItemsSort:
+      title: TargetItemsSort
       type: string
       enum:
       - Filename
       - CreatedAt
     TimeAggregation:
+      title: TimeAggregation
+      type: object
       required:
       - bucket
       - method
-      type: object
       properties:
         bucket:
           type: string
         method:
           $ref: '#/components/schemas/TimeAggregationMethod'
     TimeAggregationMethod:
-      oneOf:
-      - $ref: '#/components/schemas/Average'
-      - $ref: '#/components/schemas/Count'
-      - $ref: '#/components/schemas/Last'
-      - $ref: '#/components/schemas/Max'
-      - $ref: '#/components/schemas/Min'
-      - $ref: '#/components/schemas/None'
-    Tuple2_com.toradex.api_gw.data.DeviceTagId_com.toradex.api_gw.data.DeviceTagValue:
-      required:
-      - _1
-      - _2
-      type: object
-      properties:
-        _1:
-          type: string
-        _2:
-          type: string
-    Tuple2_scala.Long_scala.Option_scala.Double:
-      required:
-      - _1
-      type: object
-      properties:
-        _1:
-          type: integer
-          format: int64
-        _2:
-          type: number
-          format: double
-          nullable: true
+      title: TimeAggregationMethod
+      type: string
+      enum:
+      - last
+      - average
+      - max
+      - min
+      - count
+      - none
+    Tuple2_DeviceTagId_DeviceTagValue:
+      title: Tuple2_DeviceTagId_DeviceTagValue
+      type: array
+      prefixItems:
+      - type: string
+      - type: string
+    Tuple2_Long_Option_Double:
+      title: Tuple2_Long_Option_Double
+      type: array
+      prefixItems:
+      - type: integer
+        format: int64
+      - type:
+        - number
+        - 'null'
+        format: double
     UpdateCreateResult:
+      title: UpdateCreateResult
       type: object
       properties:
         affected:
@@ -3436,20 +3766,23 @@ components:
           items:
             $ref: '#/components/schemas/SimpleDeviceNotAffectedInfo'
     UpdateFleet:
+      title: UpdateFleet
+      type: object
       required:
       - name
-      type: object
       properties:
         name:
           type: string
     UpdateHibernationStatusRequest:
+      title: UpdateHibernationStatusRequest
+      type: object
       required:
       - status
-      type: object
       properties:
         status:
           type: boolean
     UpdateRequest:
+      title: UpdateRequest
       type: object
       properties:
         packageIds:
@@ -3457,42 +3790,84 @@ components:
           items:
             type: string
         custom:
-          $ref: '#/components/schemas/Map_eu.timepit.refined.api.Refined_java.lang.String_com.advancedtelematic.libtuf.data.TufDataType.ValidTargetFilename_com.toradex.api_gw.data.Update.CustomUpdateData'
+          anyOf:
+          - $ref: '#/components/schemas/Map[Refined[String, ValidTargetFilename],
+              CustomUpdateData]'
+          - type: 'null'
         devices:
-          type: array
+          type:
+          - array
+          - 'null'
           items:
             type: string
             format: uuid
-          nullable: true
         fleets:
-          type: array
+          type:
+          - array
+          - 'null'
           items:
             type: string
             format: uuid
-          nullable: true
+    UpdateResponse:
+      title: UpdateResponse
+      type: object
+      required:
+      - updateId
+      - status
+      - createdAt
+      - packages
+      properties:
+        updateId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        scheduledFor:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        completedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        packages:
+          $ref: '#/components/schemas/Map[Refined[String, ValidHardwareIdentifier],
+            Refined]'
     UpstreamEndpointErrorRepr:
+      title: UpstreamEndpointErrorRepr
+      type: object
       required:
       - msg
       - code
-      type: object
       properties:
         msg:
           type: string
         description:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         code:
           type: string
         cause:
-          nullable: true
+          anyOf:
+          - {}
+          - type: 'null'
         errorId:
-          type: string
+          type:
+          - string
+          - 'null'
           format: uuid
-          nullable: true
     UserInfo:
+      title: UserInfo
+      type: object
       required:
       - remoteIp
       - connectedAt
-      type: object
       properties:
         remoteIp:
           type: string
@@ -3500,10 +3875,11 @@ components:
           type: string
           format: date-time
     UserSession:
+      title: UserSession
+      type: object
       required:
       - deviceId
       - session
-      type: object
       properties:
         deviceId:
           type: string
