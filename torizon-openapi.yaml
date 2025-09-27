@@ -160,7 +160,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[DeviceInfoBasic]'
+                $ref: '#/components/schemas/PaginationResult_DeviceInfoBasic'
         '400':
           description: Bad Request
           content:
@@ -327,7 +327,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[NetworkInfo]'
+                $ref: '#/components/schemas/PaginationResult_NetworkInfo'
         '400':
           description: Bad Request
           content:
@@ -626,7 +626,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[DevicePackages]'
+                $ref: '#/components/schemas/PaginationResult_DevicePackages'
         '400':
           description: Bad Request
           content:
@@ -780,7 +780,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[Fleet]'
+                $ref: '#/components/schemas/PaginationResult_Fleet'
         '400':
           description: Bad Request
           content:
@@ -953,7 +953,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[DeviceInfoBasic]'
+                $ref: '#/components/schemas/PaginationResult_DeviceInfoBasic'
         '400':
           description: Bad Request
           content:
@@ -1168,7 +1168,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[Package]'
+                $ref: '#/components/schemas/PaginationResult_Package'
         '400':
           description: Bad Request
           content:
@@ -1398,7 +1398,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[ExternalPackage]'
+                $ref: '#/components/schemas/PaginationResult_ExternalPackage'
         '400':
           description: Bad Request
           content:
@@ -1424,7 +1424,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Map[DelegatedRoleName, DelegationInfo]'
+                $ref: '#/components/schemas/Map_DelegatedRoleName_DelegationInfo'
         '404':
           description: Resource Not Found
           content:
@@ -1582,7 +1582,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[UpdateResponse]'
+                $ref: '#/components/schemas/PaginationResult_UpdateResponse'
         '400':
           description: Bad Request
           content:
@@ -1811,7 +1811,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginationResult[String]'
+                $ref: '#/components/schemas/PaginationResult_String'
         '400':
           description: Bad Request
           content:
@@ -2582,8 +2582,7 @@ components:
             type: string
         custom:
           anyOf:
-          - $ref: '#/components/schemas/Map[Refined[String, ValidTargetFilename],
-              CustomUpdateData]'
+          - $ref: '#/components/schemas/Map_Refined_String_ValidTargetFilename__CustomUpdateData'
           - type: 'null'
         expiresAt:
           type:
@@ -2765,7 +2764,7 @@ components:
           type: string
         attributes:
           anyOf:
-          - $ref: '#/components/schemas/Map[DeviceTagId, DeviceTagValue]'
+          - $ref: '#/components/schemas/Map_DeviceTagId_DeviceTagValue'
           - type: 'null'
         hibernated:
           type: boolean
@@ -3159,45 +3158,16 @@ components:
           format: date-time
         ipAddress:
           type: string
-    Limit:
-      title: Limit
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          type: integer
-          format: int64
-    Map[DelegatedRoleName, DelegationInfo]:
-      title: Map[DelegatedRoleName, DelegationInfo]
+    Map_DelegatedRoleName_DelegationInfo:
+      title: Map_DelegatedRoleName_DelegationInfo
       type: object
       additionalProperties:
         $ref: '#/components/schemas/DelegationInfo'
-    Map[DeviceTagId, DeviceTagValue]:
-      title: Map[DeviceTagId, DeviceTagValue]
+    Map_DeviceTagId_DeviceTagValue:
+      title: Map_DeviceTagId_DeviceTagValue
       type: object
       additionalProperties:
         type: string
-    Map[Refined[String, And], ErrorRepresentation]:
-      title: Map[Refined[String, And], ErrorRepresentation]
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/ErrorRepresentation'
-    Map[Refined[String, And], TargetImage]:
-      title: Map[Refined[String, And], TargetImage]
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/TargetImage'
-    Map[Refined[String, ValidHardwareIdentifier], Refined]:
-      title: Map[Refined[String, ValidHardwareIdentifier], Refined]
-      type: object
-      additionalProperties:
-        type: string
-    Map[Refined[String, ValidTargetFilename], CustomUpdateData]:
-      title: Map[Refined[String, ValidTargetFilename], CustomUpdateData]
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/CustomUpdateData'
     Map_KeyData:
       title: Map_KeyData
       type: object
@@ -3208,6 +3178,26 @@ components:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/JsonSignedPayload'
+    Map_Refined_String_And__ErrorRepresentation:
+      title: Map_Refined_String_And__ErrorRepresentation
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ErrorRepresentation'
+    Map_Refined_String_And__TargetImage:
+      title: Map_Refined_String_And__TargetImage
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/TargetImage'
+    Map_Refined_String_ValidHardwareIdentifier__Refined:
+      title: Map_Refined_String_ValidHardwareIdentifier__Refined
+      type: object
+      additionalProperties:
+        type: string
+    Map_Refined_String_ValidTargetFilename__CustomUpdateData:
+      title: Map_Refined_String_ValidTargetFilename__CustomUpdateData
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/CustomUpdateData'
     Map_Value_Refined_String_ValidChecksum:
       title: Map_Value_Refined_String_ValidChecksum
       type: object
@@ -3275,15 +3265,6 @@ components:
           - string
           - 'null'
           format: uuid
-    Offset:
-      title: Offset
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          type: integer
-          format: int64
     Outlier:
       title: Outlier
       type: object
@@ -3374,8 +3355,8 @@ components:
           type:
           - string
           - 'null'
-    PaginationResult[DeviceInfoBasic]:
-      title: PaginationResult[DeviceInfoBasic]
+    PaginationResult_DeviceInfoBasic:
+      title: PaginationResult_DeviceInfoBasic
       type: object
       required:
       - total
@@ -3390,11 +3371,13 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
-    PaginationResult[DevicePackages]:
-      title: PaginationResult[DevicePackages]
+          type: integer
+          format: int64
+    PaginationResult_DevicePackages:
+      title: PaginationResult_DevicePackages
       type: object
       required:
       - total
@@ -3409,11 +3392,13 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
-    PaginationResult[ExternalPackage]:
-      title: PaginationResult[ExternalPackage]
+          type: integer
+          format: int64
+    PaginationResult_ExternalPackage:
+      title: PaginationResult_ExternalPackage
       type: object
       required:
       - total
@@ -3428,11 +3413,13 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
-    PaginationResult[Fleet]:
-      title: PaginationResult[Fleet]
+          type: integer
+          format: int64
+    PaginationResult_Fleet:
+      title: PaginationResult_Fleet
       type: object
       required:
       - total
@@ -3447,11 +3434,13 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
-    PaginationResult[NetworkInfo]:
-      title: PaginationResult[NetworkInfo]
+          type: integer
+          format: int64
+    PaginationResult_NetworkInfo:
+      title: PaginationResult_NetworkInfo
       type: object
       required:
       - total
@@ -3466,11 +3455,13 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
-    PaginationResult[Package]:
-      title: PaginationResult[Package]
+          type: integer
+          format: int64
+    PaginationResult_Package:
+      title: PaginationResult_Package
       type: object
       required:
       - total
@@ -3485,11 +3476,13 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
-    PaginationResult[String]:
-      title: PaginationResult[String]
+          type: integer
+          format: int64
+    PaginationResult_String:
+      title: PaginationResult_String
       type: object
       required:
       - total
@@ -3504,11 +3497,13 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
-    PaginationResult[UpdateResponse]:
-      title: PaginationResult[UpdateResponse]
+          type: integer
+          format: int64
+    PaginationResult_UpdateResponse:
+      title: PaginationResult_UpdateResponse
       type: object
       required:
       - total
@@ -3523,9 +3518,11 @@ components:
           type: integer
           format: int64
         offset:
-          $ref: '#/components/schemas/Offset'
+          type: integer
+          format: int64
         limit:
-          $ref: '#/components/schemas/Limit'
+          type: integer
+          format: int64
     ProvisionInfo:
       title: ProvisionInfo
       type: object
@@ -3569,7 +3566,7 @@ components:
         correlationId:
           type: string
         targets:
-          $ref: '#/components/schemas/Map[Refined[String, And], TargetImage]'
+          $ref: '#/components/schemas/Map_Refined_String_And__TargetImage'
         inFlight:
           type: boolean
     RangeNotSatisfiableRepr:
@@ -3663,7 +3660,7 @@ components:
         name:
           type: string
         ecuErrors:
-          $ref: '#/components/schemas/Map[Refined[String, And], ErrorRepresentation]'
+          $ref: '#/components/schemas/Map_Refined_String_And__ErrorRepresentation'
     SortDirection:
       title: SortDirection
       type: string
@@ -3791,8 +3788,7 @@ components:
             type: string
         custom:
           anyOf:
-          - $ref: '#/components/schemas/Map[Refined[String, ValidTargetFilename],
-              CustomUpdateData]'
+          - $ref: '#/components/schemas/Map_Refined_String_ValidTargetFilename__CustomUpdateData'
           - type: 'null'
         devices:
           type:
@@ -3836,8 +3832,7 @@ components:
           - 'null'
           format: date-time
         packages:
-          $ref: '#/components/schemas/Map[Refined[String, ValidHardwareIdentifier],
-            Refined]'
+          $ref: '#/components/schemas/Map_Refined_String_ValidHardwareIdentifier__Refined'
     UpstreamEndpointErrorRepr:
       title: UpstreamEndpointErrorRepr
       type: object
