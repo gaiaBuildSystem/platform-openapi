@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Torizon OTA
+  title: Torizon OTA v2beta API
   version: 2.0-Beta
   description: |2+
 
@@ -31,7 +31,9 @@ paths:
         \ you specify will be returned. Available filter parameters:\n    * `nameContains`\n\
         \    * `hibernated`\n    * `status`\n    * `activatedAfter`\n    * `activatedBefore`\n\
         \    * `lastSeenStart`\n    * `lastSeenEnd`\n    * `createdAtStart`\n    *\
-        \ `createdAtEnd`\n        "
+        \ `createdAtEnd`\n    * `tags`\n\n    When specifying `tags`, you cannot specify\
+        \ any other filter parameter. `tags` must have the format `<tagid>=<tag value>`\n\
+        \        "
       operationId: getDevices
       parameters:
       - name: offset
@@ -140,6 +142,14 @@ paths:
           type: array
           items:
             type: string
+      - name: tags
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            pattern: '[\w\-_ ]{1,20}+=[\w\-_/ ]{1,254}'
       - name: sortBy
         in: query
         required: false
@@ -620,6 +630,66 @@ paths:
           type:
           - string
           - 'null'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginationResult_DevicePackages'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestRepr'
+        '404':
+          description: Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundRepr'
+        '416':
+          description: Range not Satisfiable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RangeNotSatisfiableRepr'
+    post:
+      tags:
+      - Devices
+      summary: Get information about the installed packages for many devices
+      description: "\nReturns a list of devices and the packages those devices have\
+        \ installed. A list of devices can be specified\nusing the request body; if\
+        \ no devices are specified will return information for all devices in the\
+        \ repository.\n\nThe number of provided deviceUuids in the request body is\
+        \ limited to 100\n        "
+      operationId: postDevicesPackages
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - $ref: '#/components/schemas/DevicePackagesSearchParams'
+              - type: 'null'
+        required: false
       responses:
         '200':
           description: ''
@@ -2328,15 +2398,37 @@ paths:
       summary: Fetch all sessions (and their related deviceId) for a user
       description: "\n        "
       operationId: getRemote-accessUserSessions
+      parameters:
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserSession'
+                $ref: '#/components/schemas/PaginationResult_UserSession'
+        '400':
+          description: 'Invalid value for: query parameter offset, Invalid value for:
+            query parameter limit'
+          content:
+            text/plain:
+              schema:
+                type: string
         '404':
           description: Resource Not Found
           content:
@@ -2736,6 +2828,7 @@ components:
       - createdAt
       - deviceStatus
       - notes
+      - tags
       - hibernated
       properties:
         deviceUuid:
@@ -2762,10 +2855,8 @@ components:
           $ref: '#/components/schemas/DeviceStatus'
         notes:
           type: string
-        attributes:
-          anyOf:
-          - $ref: '#/components/schemas/Map_DeviceTagId_DeviceTagValue'
-          - type: 'null'
+        tags:
+          $ref: '#/components/schemas/Map_Refined_String_And__Refined'
         hibernated:
           type: boolean
     DeviceInfoExtended:
@@ -2779,6 +2870,7 @@ components:
       - deviceStatus
       - notes
       - hibernated
+      - tags
       - networkInfo
       properties:
         deviceUuid:
@@ -2820,10 +2912,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstalledPackage'
-        deviceTags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tuple2_DeviceTagId_DeviceTagValue'
+        tags:
+          $ref: '#/components/schemas/Map_Refined_String_And__Refined'
         networkInfo:
           $ref: '#/components/schemas/NetworkInfo'
     DeviceNameRequest:
@@ -2855,6 +2945,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstalledPackage'
+    DevicePackagesSearchParams:
+      title: DevicePackagesSearchParams
+      type: object
+      properties:
+        deviceUuids:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            format: uuid
+        nameContains:
+          type:
+          - string
+          - 'null'
     DeviceSession:
       title: DeviceSession
       type: object
@@ -2903,8 +3007,7 @@ components:
           type: integer
           format: int64
         hash:
-          type: string
-          format: checksum
+          $ref: '#/components/schemas/Hashes'
     EcuInfoResponse:
       title: EcuInfoResponse
       type: object
@@ -3021,8 +3124,7 @@ components:
       - length
       properties:
         hashes:
-          type: string
-          format: checksum
+          $ref: '#/components/schemas/Hashes'
         length:
           type: integer
           format: int64
@@ -3092,6 +3194,14 @@ components:
       enum:
       - static
       - dynamic
+    Hashes:
+      title: Hashes
+      type: object
+      required:
+      - sha256
+      properties:
+        sha256:
+          type: string
     Image:
       title: Image
       type: object
@@ -3163,11 +3273,6 @@ components:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/DelegationInfo'
-    Map_DeviceTagId_DeviceTagValue:
-      title: Map_DeviceTagId_DeviceTagValue
-      type: object
-      additionalProperties:
-        type: string
     Map_KeyData:
       title: Map_KeyData
       type: object
@@ -3183,6 +3288,13 @@ components:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/ErrorRepresentation'
+    Map_Refined_String_And__Refined:
+      title: Map_Refined_String_And__Refined
+      type: object
+      additionalProperties:
+        type: string
+        maxLength: 254
+        pattern: '[\w\-_/ ]+'
     Map_Refined_String_And__TargetImage:
       title: Map_Refined_String_And__TargetImage
       type: object
@@ -3523,6 +3635,27 @@ components:
         limit:
           type: integer
           format: int64
+    PaginationResult_UserSession:
+      title: PaginationResult_UserSession
+      type: object
+      required:
+      - total
+      - offset
+      - limit
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSession'
+        total:
+          type: integer
+          format: int64
+        offset:
+          type: integer
+          format: int64
+        limit:
+          type: integer
+          format: int64
     ProvisionInfo:
       title: ProvisionInfo
       type: object
@@ -3734,12 +3867,6 @@ components:
       - min
       - count
       - none
-    Tuple2_DeviceTagId_DeviceTagValue:
-      title: Tuple2_DeviceTagId_DeviceTagValue
-      type: array
-      prefixItems:
-      - type: string
-      - type: string
     Tuple2_Long_Option_Double:
       title: Tuple2_Long_Option_Double
       type: array
@@ -3778,6 +3905,21 @@ components:
       properties:
         status:
           type: boolean
+    UpdateReportedResult:
+      title: UpdateReportedResult
+      type: object
+      required:
+      - resultCode
+      - success
+      properties:
+        resultCode:
+          type: string
+        success:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
     UpdateRequest:
       title: UpdateRequest
       type: object
@@ -3831,6 +3973,10 @@ components:
           - string
           - 'null'
           format: date-time
+        deviceResult:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateReportedResult'
+          - type: 'null'
         packages:
           $ref: '#/components/schemas/Map_Refined_String_ValidHardwareIdentifier__Refined'
     UpstreamEndpointErrorRepr:
