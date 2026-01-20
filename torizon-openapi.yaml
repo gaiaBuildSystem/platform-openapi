@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: Torizon OTA v2beta API
-  version: 2.0-Beta
+  title: Torizon OTA v2 API Endpoints
+  version: '2.0'
   description: |2+
 
     This API is rate limited and will return the following headers for each API call.
@@ -15,7 +15,7 @@ info:
        - Retry-After - The number of seconds to wait until this request is allowed
 
 servers:
-- url: https://app.torizon.io/api/v2beta
+- url: https://app.torizon.io/api/v2
   description: Torizon Platform API
 paths:
   /devices:
@@ -40,17 +40,15 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: deviceUuid
         in: query
@@ -70,70 +68,62 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
       - name: hibernated
         in: query
         required: false
         schema:
-          type:
-          - boolean
-          - 'null'
+          type: boolean
+          nullable: true
       - name: status
         in: query
         required: false
         schema:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/DeviceStatus'
-          - type: 'null'
       - name: activatedAfter
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
       - name: activatedBefore
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
       - name: lastSeenStart
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
       - name: lastSeenEnd
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
       - name: createdAtStart
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
       - name: createdAtEnd
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
       - name: hardwareIds
         in: query
@@ -154,16 +144,16 @@ paths:
         in: query
         required: false
         schema:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/DeviceSort'
-          - type: 'null'
       - name: sortDirection
         in: query
         required: false
         schema:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/DeviceSortDirection'
-          - type: 'null'
       responses:
         '200':
           description: ''
@@ -312,17 +302,15 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: deviceUuid
         in: query
@@ -568,7 +556,11 @@ paths:
       tags:
       - Devices
       summary: Get information about the installed packages for a single device
-      description: Returns a list of the packages installed on the device.
+      description: |-
+        Returns a list of the packages installed on the device.
+
+        Package reporting logic implemented as defined in: [Devices/getDevicesPackages](#/Devices/getDevicesPackages)
+        "
       operationId: getDevicesPackagesDeviceuuid
       parameters:
       - name: deviceUuid
@@ -594,27 +586,40 @@ paths:
       tags:
       - Devices
       summary: Get information about the installed packages for many devices
-      description: "\nReturns a list of devices and the packages those devices have\
-        \ installed. A list of devices can be specified as\na query parameter; if\
-        \ no devices are specified will return information for all devices in the\
-        \ repository.\n        "
+      description: |2
+
+        Returns a list of devices and the packages those devices have installed. A list of devices can be specified as
+        a query parameter; if no devices are specified will return information for all devices in the repository.
+
+        Packages are reported according to the following process:
+
+        1. The image repository is searched using the package hash provided by the device.
+        2. The search results are evaluated according to these rules:
+
+           - **Single match**
+             If exactly one package is found matching the hash, this package will be reported.
+
+           - **Multiple matches**
+             - If one of the matching packages also matches the `packageId` reported by the device, that package will be reported.
+             - If none of the matching packages correspond to the device’s `packageId`, the package with the first `packageId` in alphabetical order will be reported.
+
+           - **No matches**
+             If no packages are found matching the hash, it will be reported that the package is not present in the repository.
       operationId: getDevicesPackages
       parameters:
       - name: offset
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: deviceUuid
         in: query
@@ -627,9 +632,8 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
       responses:
         '200':
           description: ''
@@ -659,36 +663,37 @@ paths:
       tags:
       - Devices
       summary: Get information about the installed packages for many devices
-      description: "\nReturns a list of devices and the packages those devices have\
-        \ installed. A list of devices can be specified\nusing the request body; if\
-        \ no devices are specified will return information for all devices in the\
-        \ repository.\n\nThe number of provided deviceUuids in the request body is\
-        \ limited to 100\n        "
+      description: |2
+
+        Returns a list of devices and the packages those devices have installed. A list of devices can be specified
+        using the request body; if no devices are specified will return information for all devices in the repository.
+
+        The number of provided deviceUuids in the request body is limited to 100
+
+        Package reporting logic implemented as defined in: [Devices/getDevicesPackages](#/Devices/getDevicesPackages)
       operationId: postDevicesPackages
       parameters:
       - name: offset
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       requestBody:
         content:
           application/json:
             schema:
-              anyOf:
+              nullable: true
+              allOf:
               - $ref: '#/components/schemas/DevicePackagesSearchParams'
-              - type: 'null'
         required: false
       responses:
         '200':
@@ -724,8 +729,9 @@ paths:
         \ information:\n* Name, ID, UUID, notes (if any)\n* Time of provisioning,\
         \ activation, latest update, and last connection to the repository\n* Any\
         \ fleets the device is part of\n* Installed packages, if known\n* Network\
-        \ information (local IP address, MAC, hostname)\n* Device tags, if any\n \
-        \       "
+        \ information (local IP address, MAC, hostname)\n* Device tags, if any\n\n\
+        Package reporting logic implemented as defined in: [Devices/getDevicesPackages](#/Devices/getDevicesPackages)\n\
+        \        "
       operationId: getDevicesDeviceuuid
       parameters:
       - name: deviceUuid
@@ -832,17 +838,15 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       responses:
         '200':
@@ -1005,17 +1009,15 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       responses:
         '200':
@@ -1149,33 +1151,29 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: idContains
         in: query
         required: false
         deprecated: true
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
       - name: nameContains
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
       - name: packageSource
         in: query
         required: false
@@ -1187,16 +1185,14 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
       - name: version
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
       - name: hardwareIds
         in: query
         required: false
@@ -1222,16 +1218,16 @@ paths:
         in: query
         required: false
         schema:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/TargetItemsSort'
-          - type: 'null'
       - name: sortDirection
         in: query
         required: false
         schema:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/SortDirection'
-          - type: 'null'
       responses:
         '200':
           description: ''
@@ -1443,25 +1439,22 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: idContains
         in: query
         required: false
         schema:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
       responses:
         '200':
           description: ''
@@ -1634,17 +1627,15 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       responses:
         '200':
@@ -1680,9 +1671,8 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
       responses:
         '200':
@@ -1859,9 +1849,8 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
           minimum: 1000
           maximum: 2147483647000
@@ -1869,9 +1858,8 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
           minimum: 1000
           maximum: 2147483647000
@@ -1957,9 +1945,8 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
       responses:
         '200':
@@ -2049,9 +2036,8 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
       responses:
         '200':
@@ -2171,17 +2157,15 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
       - name: total_buckets
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
       responses:
         '200':
@@ -2403,17 +2387,15 @@ paths:
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       - name: limit
         in: query
         required: false
         schema:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int64
       responses:
         '200':
@@ -2604,9 +2586,8 @@ components:
           - {}
           - type: 'null'
         errorId:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uuid
     ClientSignature:
       title: ClientSignature
@@ -2642,9 +2623,8 @@ components:
           - {}
           - type: 'null'
         errorId:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uuid
     Count:
       title: Count
@@ -2661,9 +2641,8 @@ components:
         fleetType:
           $ref: '#/components/schemas/FleetType'
         expression:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
     CreateLockboxRequest:
       title: CreateLockboxRequest
       type: object
@@ -2673,13 +2652,12 @@ components:
           items:
             type: string
         custom:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/Map_Refined_String_ValidTargetFilename__CustomUpdateData'
-          - type: 'null'
         expiresAt:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
     CreateSessionRequest:
       title: CreateSessionRequest
@@ -2698,9 +2676,8 @@ components:
       type: object
       properties:
         uri:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uri
         metadata:
           anyOf:
@@ -2711,23 +2688,19 @@ components:
       type: object
       properties:
         lastFetched:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         remoteUri:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uri
         friendlyName:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
         expires:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
     DetailedMetricQuery:
       title: DetailedMetricQuery
@@ -2749,14 +2722,12 @@ components:
           type: integer
           format: int64
         datapointCount:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
         totalBuckets:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
     DeviceCreateReq:
       title: DeviceCreateReq
@@ -2765,19 +2736,16 @@ components:
       - deviceId
       properties:
         deviceName:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
         deviceId:
           type: string
         hibernated:
-          type:
-          - boolean
-          - 'null'
+          type: boolean
+          nullable: true
         fleetIds:
-          type:
-          - array
-          - 'null'
+          type: array
+          nullable: true
           uniqueItems: true
           items:
             type: string
@@ -2801,22 +2769,20 @@ components:
           type: string
           format: uuid
         lastApiConnect:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         lastSshSessionConnect:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/LastSshSession'
-          - type: 'null'
         lastVersion:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
         lastUserConnect:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/UserInfo'
-          - type: 'null'
     DeviceInfoBasic:
       title: DeviceInfoBasic
       type: object
@@ -2839,17 +2805,15 @@ components:
         deviceId:
           type: string
         lastSeen:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         createdAt:
           type: string
           format: date-time
         activatedAt:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         deviceStatus:
           $ref: '#/components/schemas/DeviceStatus'
@@ -2881,17 +2845,15 @@ components:
         deviceId:
           type: string
         lastSeen:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         createdAt:
           type: string
           format: date-time
         activatedAt:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         deviceStatus:
           $ref: '#/components/schemas/DeviceStatus'
@@ -2900,9 +2862,8 @@ components:
         hibernated:
           type: boolean
         lastUpdated:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         deviceFleets:
           type: array
@@ -2956,9 +2917,8 @@ components:
             type: string
             format: uuid
         nameContains:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
     DeviceSession:
       title: DeviceSession
       type: object
@@ -3032,24 +2992,21 @@ components:
       type: object
       properties:
         hardwareIds:
-          type:
-          - array
-          - 'null'
+          type: array
+          nullable: true
           items:
             type: string
         uri:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uri
         proprietaryMeta:
           anyOf:
           - {}
           - type: 'null'
         comment:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
     ErrorRepresentation:
       title: ErrorRepresentation
       type: object
@@ -3066,9 +3023,8 @@ components:
           - {}
           - type: 'null'
         errorId:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uuid
     ExternalPackage:
       title: ExternalPackage
@@ -3095,22 +3051,19 @@ components:
         hashes:
           $ref: '#/components/schemas/Map_Value_Refined_String_ValidChecksum'
         pkgType:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
         hardwareIds:
           type: array
           items:
             type: string
         createdAt:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         uri:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uri
         proprietaryMeta:
           anyOf:
@@ -3149,9 +3102,8 @@ components:
         fleetType:
           $ref: '#/components/schemas/FleetType'
         expression:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
     FleetMetricsOutliersRequest:
       title: FleetMetricsOutliersRequest
       type: object
@@ -3172,13 +3124,12 @@ components:
           type: integer
           format: int64
         aggregation:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/OutlierAggregationMethod'
-          - type: 'null'
         limit:
-          type:
-          - integer
-          - 'null'
+          type: integer
+          nullable: true
           format: int32
     FleetMetricsOutliersResponse:
       title: FleetMetricsOutliersResponse
@@ -3339,17 +3290,14 @@ components:
           type: string
           format: uuid
         localIpV4:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
         hostname:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
         macAddress:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
     None:
       title: None
       type: object
@@ -3373,9 +3321,8 @@ components:
           - {}
           - type: 'null'
         errorId:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uuid
     Outlier:
       title: Outlier
@@ -3388,9 +3335,8 @@ components:
           type: string
           format: uuid
         value:
-          type:
-          - number
-          - 'null'
+          type: number
+          nullable: true
           format: double
         observedAt:
           type: string
@@ -3442,31 +3388,27 @@ components:
           type: string
           minLength: 1
         pkgType:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
         hardwareIds:
           type: array
           items:
             type: string
         createdAt:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         uri:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uri
         proprietaryMeta:
           anyOf:
           - {}
           - type: 'null'
         comment:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
     PaginationResult_DeviceInfoBasic:
       title: PaginationResult_DeviceInfoBasic
       type: object
@@ -3722,9 +3664,8 @@ components:
           - {}
           - type: 'null'
         errorId:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uuid
     Series:
       title: Series
@@ -3833,9 +3774,8 @@ components:
         image:
           $ref: '#/components/schemas/Image'
         uri:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uri
         createdAt:
           type: string
@@ -3873,9 +3813,8 @@ components:
       prefixItems:
       - type: integer
         format: int64
-      - type:
-        - number
-        - 'null'
+      - type: number
+        nullable: true
         format: double
     UpdateCreateResult:
       title: UpdateCreateResult
@@ -3917,9 +3856,8 @@ components:
         success:
           type: boolean
         description:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
     UpdateRequest:
       title: UpdateRequest
       type: object
@@ -3929,20 +3867,18 @@ components:
           items:
             type: string
         custom:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/Map_Refined_String_ValidTargetFilename__CustomUpdateData'
-          - type: 'null'
         devices:
-          type:
-          - array
-          - 'null'
+          type: array
+          nullable: true
           items:
             type: string
             format: uuid
         fleets:
-          type:
-          - array
-          - 'null'
+          type: array
+          nullable: true
           items:
             type: string
             format: uuid
@@ -3964,19 +3900,17 @@ components:
           type: string
           format: date-time
         scheduledFor:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         completedAt:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: date-time
         deviceResult:
-          anyOf:
+          nullable: true
+          allOf:
           - $ref: '#/components/schemas/UpdateReportedResult'
-          - type: 'null'
         packages:
           $ref: '#/components/schemas/Map_Refined_String_ValidHardwareIdentifier__Refined'
     UpstreamEndpointErrorRepr:
@@ -3999,9 +3933,8 @@ components:
           - {}
           - type: 'null'
         errorId:
-          type:
-          - string
-          - 'null'
+          type: string
+          nullable: true
           format: uuid
     UserInfo:
       title: UserInfo
