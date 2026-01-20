@@ -5,5 +5,5 @@ This repository contains the OpenAPI specification for the Torizon Platform API 
 ## Updating the OpenAPI Spec
 
 ```bash
-wget https://app.torizon.io/api/docs/torizon-openapi.yaml -O torizon-openapi.yaml
+wget https://app.torizon.io/api/docs-2.0/torizon-2.0-openapi.yaml -O torizon-openapi.yaml
 ```
